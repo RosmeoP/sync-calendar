@@ -365,14 +365,30 @@ function buildMatchCard(m, isHero) {
   if (st === 'live') card.classList.add('is-live');
   if (!isHero) card.classList.add(`status-${st}`);
 
+  let liveTimeHTML = '';
+  let badgeText = 'LIVE';
+  if (st === 'live') {
+    if (m.status === 'HALFTIME') {
+      badgeText = 'HT';
+      liveTimeHTML = `<span class="score-time-live">HT</span>`;
+    } else if (m.status === 'PAUSED') {
+      badgeText = 'PAUSED';
+      liveTimeHTML = `<span class="score-time-live">PAUSED</span>`;
+    } else {
+      const min = getMatchMinute(m);
+      badgeText = `LIVE ${min}'`;
+      liveTimeHTML = `<span class="score-time-live">${min}'</span>`;
+    }
+  }
+
   const badge = st === 'live'
-    ? `<span class="badge badge-live"><span class="badge-live-dot"></span> LIVE</span>`
+    ? `<span class="badge badge-live"><span class="badge-live-dot"></span> ${badgeText}</span>`
     : st === 'finished'
     ? `<span class="badge badge-ft">FT</span>`
     : `<span class="badge badge-upcoming">Upcoming</span>`;
 
   const scoreHTML = (st === 'live' || st === 'finished')
-    ? `<span class="score-main${isHero ? ' hero-score' : ''}">${hasScore ? hScore : '–'}&thinsp;:&thinsp;${hasScore ? aScore : '–'}</span>`
+    ? `<span class="score-main${isHero ? ' hero-score' : ''}">${hasScore ? hScore : '–'}&thinsp;:&thinsp;${hasScore ? aScore : '–'}</span>${liveTimeHTML}`
     : `<span class="score-vs">VS</span><span class="score-time">${timeStr}</span>`;
 
   const calBtn = isHero
@@ -477,6 +493,21 @@ function normStatus(raw) {
   if (['FINISHED','AWARDED'].includes(raw))            return 'finished';
   if (['IN_PLAY','PAUSED','HALFTIME'].includes(raw))   return 'live';
   return 'upcoming';
+}
+
+function getMatchMinute(m) {
+  if (!m.utcDate) return '';
+  const start = new Date(m.utcDate);
+  const now = new Date();
+  const diffMs = now - start;
+  const diffMins = Math.floor(diffMs / 60000);
+  
+  if (diffMins < 0) return '0';
+  if (diffMins <= 45) return String(diffMins);
+  if (diffMins <= 60) return '45+';
+  const secondHalfMin = diffMins - 15;
+  if (secondHalfMin <= 90) return String(secondHalfMin);
+  return '90+';
 }
 
 function fmtStage(stage, group) {
@@ -626,7 +657,14 @@ function renderFavTeamDashboard(container) {
       
     const dateStr = new Date(nextMatch.utcDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
     const timeStr = new Date(nextMatch.utcDate).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
-    const statusLabel = isLive ? '🔴 LIVE' : `${dateStr} · ${timeStr}`;
+    
+    let liveLabelText = '🔴 LIVE';
+    if (isLive) {
+      if (nextMatch.status === 'HALFTIME') liveLabelText = '🔴 LIVE - HT';
+      else if (nextMatch.status === 'PAUSED') liveLabelText = '🔴 LIVE - PAUSED';
+      else liveLabelText = `🔴 LIVE - ${getMatchMinute(nextMatch)}'`;
+    }
+    const statusLabel = isLive ? liveLabelText : `${dateStr} · ${timeStr}`;
     
     nextHTML = `
       <div class="fav-match-card">
