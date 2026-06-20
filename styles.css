@@ -14,6 +14,7 @@
   /* Status — iOS palette, not neon */
   --green:        #30d158;
   --green-tint:   rgba(48,209,88,0.14);
+  --green-edge:   rgba(48,209,88,0.3);
   --red:          #ff3b30;
   --red-tint:     rgba(255,59,48,0.14);
   --red-edge:     rgba(255,59,48,0.3);
@@ -1041,7 +1042,7 @@ footer {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--t3);
+  color: var(--t2);
   margin-bottom: 8px;
 }
 
@@ -1083,7 +1084,7 @@ footer {
 .fav-btn-change {
   background: none;
   border: none;
-  color: var(--t3);
+  color: var(--t2);
   font-size: 0.68rem;
   cursor: pointer;
   text-decoration: underline;
@@ -1111,7 +1112,7 @@ footer {
 .fav-stat-lbl {
   font-size: 0.52rem;
   font-weight: 700;
-  color: var(--t3);
+  color: var(--t2);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 2px;
@@ -1128,7 +1129,7 @@ footer {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--t3);
+  color: var(--t2);
   margin-bottom: 6px;
 }
 
@@ -1158,13 +1159,13 @@ footer {
 
 .fav-match-meta {
   font-size: 0.65rem;
-  color: var(--t3);
+  color: var(--t2);
   margin-top: 4px;
 }
 
 .fav-btn-sync {
   width: 100%;
-  background: var(--green-glass);
+  background: var(--green-tint);
   border: 1px solid var(--green-edge);
   color: var(--green);
   border-radius: var(--r-md);
