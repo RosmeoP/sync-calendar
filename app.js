@@ -190,7 +190,13 @@ function renderSchedule() {
     dl.textContent = label;
     g.appendChild(dl);
 
-    list.forEach(m => g.appendChild(buildMatchCard(m, false)));
+    let delay = 0;
+    list.forEach(m => {
+      const card = buildMatchCard(m, false);
+      card.style.animationDelay = `${delay}ms`;
+      delay += 50;
+      g.appendChild(card);
+    });
     scheduleEl.appendChild(g);
   });
 }
@@ -206,6 +212,7 @@ function buildMatchCard(m, isHero) {
   const homeTLA = m.homeTeam?.tla   || '';
   const awayTLA = m.awayTeam?.tla   || '';
 
+  card.classList.add(`status-${st}`);
   if (st === 'live') card.classList.add('is-live');
 
   const matchDate  = new Date(m.utcDate);
