@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>FIFA World Cup 2026</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-brand">
+      <div class="header-logo-wrap">🏆</div>
+      <div>
+        <div class="header-title">World Cup 2026</div>
+        <div class="header-sub">USA · Canada · Mexico</div>
+      </div>
+    </div>
+    <button id="download-all-btn" class="btn-download hidden">⬇ .ics</button>
+  </header>
+
+  <!-- LOADING -->
+  <div id="loading" class="splash">
+    <div class="splash-logo">🏆</div>
+    <div class="spinner"></div>
+    <p>Loading schedule…</p>
+  </div>
+
+  <!-- ERROR -->
+  <div id="error-msg" class="error-screen hidden"></div>
+
+  <!-- MAIN CONTENT -->
+  <div id="main-content" class="hidden">
+
+    <!-- STATS STRIP -->
+    <div class="stats-strip">
+      <div class="stat-chip live-chip">
+        <span class="pulse-dot"></span>
+        <span id="stat-live">0</span> Live
+      </div>
+      <div class="stat-chip">
+        <span class="chip-icon">📅</span>
+        <span id="stat-today">0</span> Today
+      </div>
+      <div class="stat-chip">
+        <span class="chip-icon">⏱</span>
+        <span id="stat-upcoming">0</span> Upcoming
+      </div>
+      <div class="stat-chip">
+        <span class="chip-icon">✓</span>
+        <span id="stat-finished">0</span> Done
+      </div>
+    </div>
+
+    <!-- HERO: Live / Next Featured Match -->
+    <div id="hero-section"></div>
+
+    <!-- TABS -->
+    <div class="tabs-scroll">
+      <div class="tabs-bar" id="tabs-bar">
+        <button class="tab active" data-tab="all">All</button>
+        <button class="tab tab-live" data-tab="live">🔴 Live</button>
+        <button class="tab" data-tab="today">Today</button>
+        <button class="tab" data-tab="upcoming">Upcoming</button>
+        <button class="tab" data-tab="finished">Finished</button>
+      </div>
+    </div>
+
+    <!-- SEARCH + STAGE -->
+    <div class="filters-row">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="search" id="team-search" placeholder="Search team…" />
+      </div>
+      <select id="stage-filter">
+        <option value="">All stages</option>
+        <option value="GROUP_STAGE">Group Stage</option>
+        <option value="LAST_32">Round of 32</option>
+        <option value="LAST_16">Round of 16</option>
+        <option value="QUARTER_FINALS">Quarter-finals</option>
+        <option value="SEMI_FINALS">Semi-finals</option>
+        <option value="THIRD_PLACE">3rd Place</option>
+        <option value="FINAL">Final</option>
+      </select>
+    </div>
+
+    <!-- SCHEDULE -->
+    <main id="schedule"></main>
+
+    <!-- STANDINGS -->
+    <section id="standings-section" class="hidden">
+      <div class="section-hdr">
+        <h2 class="section-title">Group Standings</h2>
+        <select id="group-select" class="group-select"></select>
+      </div>
+      <div id="standings-table" class="standings-card"></div>
+    </section>
+
+    <!-- SYNC INSTRUCTIONS -->
+    <div class="info-card">
+      <div class="info-icon">📱</div>
+      <div>
+        <div class="info-title">Sync to iPhone Calendar</div>
+        <div class="info-body">Tap <strong>+ Cal</strong> on any match to add it, or use <strong>⬇ .ics</strong> in the header to download the full schedule — iPhone imports all matches at once.</div>
+      </div>
+    </div>
+
+  </div><!-- /main-content -->
+
+  <footer>
+    <p>Data · <a href="https://www.football-data.org" target="_blank">football-data.org</a> &nbsp;·&nbsp; Times in your local timezone</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
