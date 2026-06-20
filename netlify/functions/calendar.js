@@ -1,7 +1,38 @@
 const fs   = require('fs');
 const path = require('path');
 
-// ── ICS helpers ───────────────────────────────────────────────────────────────
+// ── Flag helpers ──────────────────────────────────────────────────────────────
+// Converts a 2-letter ISO country code to its flag emoji
+function isoToFlag(iso2) {
+  return iso2.toUpperCase().split('')
+    .map(c => String.fromCodePoint(c.charCodeAt(0) + 127397))
+    .join('');
+}
+
+// TLA (football-data.org) → ISO 3166-1 alpha-2
+const TLA_TO_ISO = {
+  ARG:'AR', AUS:'AU', AUT:'AT', BEL:'BE', BOL:'BO', BRA:'BR',
+  CAN:'CA', CHI:'CL', CMR:'CM', COD:'CD', COL:'CO', CIV:'CI',
+  CRC:'CR', CRO:'HR', CZE:'CZ', DEN:'DK', ECU:'EC', EGY:'EG',
+  ENG:'GB', ESP:'ES', FRA:'FR', GER:'DE', GHA:'GH', GRE:'GR',
+  GTM:'GT', HND:'HN', HUN:'HU', IDN:'ID', IRN:'IR', IRQ:'IQ',
+  ITA:'IT', JAM:'JM', JPN:'JP', KOR:'KR', KSA:'SA', MAR:'MA',
+  MEX:'MX', MLI:'ML', MOR:'MA', NED:'NL', NGA:'NG', NOR:'NO',
+  NZL:'NZ', PAK:'PK', PAN:'PA', PAR:'PY', PER:'PE', POL:'PL',
+  POR:'PT', QAT:'QA', RSA:'ZA', ROU:'RO', SAU:'SA', SCO:'GB',
+  SEN:'SN', SRB:'RS', SUI:'CH', SVK:'SK', SWE:'SE', TAN:'TZ',
+  TUN:'TN', TUR:'TR', UKR:'UA', URU:'UY', USA:'US', VEN:'VE',
+  WAL:'GB', ZIM:'ZW',
+};
+
+function teamFlag(team) {
+  const tla = team?.tla;
+  if (!tla) return '';
+  const iso = TLA_TO_ISO[tla.toUpperCase()];
+  if (!iso) return '';
+  return isoToFlag(iso);
+}
+
 function fmtICS(d) {
   return d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
 }
@@ -24,16 +55,20 @@ function generateICS(matches, opts = {}) {
   const events = matches.map(m => {
     const start = new Date(m.utcDate);
     const end   = new Date(start.getTime() + 2 * 60 * 60 * 1000);
-    const home  = m.homeTeam?.name || 'TBD';
-    const away  = m.awayTeam?.name || 'TBD';
+    const home     = m.homeTeam?.name || 'TBD';
+    const away     = m.awayTeam?.name || 'TBD';
+    const homeFlag = teamFlag(m.homeTeam);
+    const awayFlag = teamFlag(m.awayTeam);
+    const homePart = homeFlag ? `${homeFlag} ${home}` : home;
+    const awayPart = awayFlag ? `${awayFlag} ${away}` : away;
     let desc    = fmtStage(m.stage, m.group);
-    let summary = `${prefix}${home} vs ${away}`;
+    let summary = `${prefix}${homePart} vs ${awayPart}`;
 
     if (m.status === 'FINISHED' || m.status === 'AWARDED') {
       const h = m.score?.fullTime?.home ?? '–';
       const a = m.score?.fullTime?.away ?? '–';
       desc += `\\nResult: ${home} ${h} – ${a} ${away}`;
-      if (includeScores) summary = `${prefix}${home} ${h}–${a} ${away}`;
+      if (includeScores) summary = `${prefix}${homePart} ${h}–${a} ${awayPart}`;
     }
 
     return [
