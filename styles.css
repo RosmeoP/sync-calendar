@@ -288,14 +288,24 @@ header {
 }
 
 .hero-card .btn-cal-hero {
-  background: rgba(0, 0, 0, 0.06) !important;
+  background: rgba(0, 0, 0, 0.05) !important;
   color: #1c1c1e !important;
   border: 1px solid rgba(0, 0, 0, 0.08) !important;
   box-shadow: none !important;
+  transition: background 0.15s, transform 0.1s;
 }
 
 .hero-card .btn-cal-hero:hover {
-  background: rgba(0, 0, 0, 0.12) !important;
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+
+.hero-card .btn-cal-hero:active {
+  transform: scale(0.97) !important;
+}
+
+.hero-card .btn-cal-hero:focus-visible {
+  outline: 2px solid #1c1c1e !important;
+  outline-offset: 2px;
 }
 
 .hero-card .score-time-live {
@@ -450,6 +460,10 @@ header {
   display: flex; align-items: center;
   justify-content: space-between;
   margin-top: 18px; gap: 10px;
+}
+
+.hero-card .hero-footer {
+  border-top-color: rgba(0, 0, 0, 0.06) !important;
 }
 
 .venue-small {
