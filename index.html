@@ -33,86 +33,136 @@
   <!-- ERROR -->
   <div id="error-msg" class="error-screen hidden"></div>
 
-  <!-- MAIN CONTENT -->
+  <!-- DASHBOARD -->
   <div id="main-content" class="hidden">
+    <div class="dashboard-layout">
 
-    <!-- STATS STRIP -->
-    <div class="stats-strip">
-      <div class="stat-chip live-chip">
-        <span class="pulse-dot"></span>
-        <span id="stat-live">0</span> Live
-      </div>
-      <div class="stat-chip">
-        <span class="chip-icon">📅</span>
-        <span id="stat-today">0</span> Today
-      </div>
-      <div class="stat-chip">
-        <span class="chip-icon">⏱</span>
-        <span id="stat-upcoming">0</span> Upcoming
-      </div>
-      <div class="stat-chip">
-        <span class="chip-icon">✓</span>
-        <span id="stat-finished">0</span> Done
-      </div>
-    </div>
+      <!-- ── LEFT PANEL ──────────────────────────────── -->
+      <aside class="panel-left desktop-only">
 
-    <!-- HERO: Live / Next Featured Match -->
-    <div id="hero-section"></div>
+        <div class="pl-section">
+          <div class="pl-heading">Overview <span class="pl-scope-badge">Overall</span></div>
+          <div class="overview-grid" id="overview-grid">
+            <!-- populated by JS -->
+          </div>
+        </div>
 
-    <!-- TABS -->
-    <div class="tabs-scroll">
-      <div class="tabs-bar" id="tabs-bar">
-        <button class="tab active" data-tab="all">All</button>
-        <button class="tab tab-live" data-tab="live">🔴 Live</button>
-        <button class="tab" data-tab="today">Today</button>
-        <button class="tab" data-tab="upcoming">Upcoming</button>
-        <button class="tab" data-tab="finished">Finished</button>
-      </div>
-    </div>
+        <div class="pl-section">
+          <div class="pl-heading">Next Up</div>
+          <div id="next-matches-list">
+            <!-- populated by JS -->
+          </div>
+        </div>
 
-    <!-- SEARCH + STAGE -->
-    <div class="filters-row">
-      <div class="search-wrap">
-        <span class="search-icon">🔍</span>
-        <input type="search" id="team-search" placeholder="Search team…" />
-      </div>
-      <select id="stage-filter">
-        <option value="">All stages</option>
-        <option value="GROUP_STAGE">Group Stage</option>
-        <option value="LAST_32">Round of 32</option>
-        <option value="LAST_16">Round of 16</option>
-        <option value="QUARTER_FINALS">Quarter-finals</option>
-        <option value="SEMI_FINALS">Semi-finals</option>
-        <option value="THIRD_PLACE">3rd Place</option>
-        <option value="FINAL">Final</option>
-      </select>
-    </div>
+        <div class="pl-section">
+          <div class="pl-heading">Tournament</div>
+          <div id="tournament-progress">
+            <!-- populated by JS -->
+          </div>
+        </div>
 
-    <!-- SCHEDULE -->
-    <main id="schedule"></main>
+      </aside>
 
-    <!-- STANDINGS -->
-    <section id="standings-section" class="hidden">
-      <div class="section-hdr">
-        <h2 class="section-title">Group Standings</h2>
-        <select id="group-select" class="group-select"></select>
-      </div>
-      <div id="standings-table" class="standings-card"></div>
-    </section>
+      <!-- ── CENTER PANEL ────────────────────────────── -->
+      <div class="panel-center">
 
-    <!-- SYNC INSTRUCTIONS -->
-    <div class="info-card">
-      <div class="info-icon">📱</div>
-      <div>
-        <div class="info-title">Sync to iPhone Calendar</div>
-        <div class="info-body">Tap <strong>+ Cal</strong> on any match to add it, or use <strong>⬇ .ics</strong> in the header to download the full schedule — iPhone imports all matches at once.</div>
-      </div>
-    </div>
+        <!-- Mobile-only: stats strip + hero -->
+        <div class="mobile-only">
+          <div class="stats-strip" id="stats-strip-mobile">
+            <div class="stat-chip live-chip"><span class="pulse-dot"></span><span id="stat-live">0</span> Live</div>
+            <div class="stat-chip"><span class="chip-icon">📅</span><span id="stat-today">0</span> Today</div>
+            <div class="stat-chip"><span class="chip-icon">⏱</span><span id="stat-upcoming">0</span> Upcoming</div>
+            <div class="stat-chip"><span class="chip-icon">✓</span><span id="stat-finished">0</span> Done</div>
+          </div>
+          <div id="hero-section" class="hero-wrap"></div>
+        </div>
 
+        <!-- Desktop: featured live/next match in center -->
+        <div id="hero-center" class="desktop-only hero-center-wrap"></div>
+
+        <!-- Tabs -->
+        <div class="tabs-scroll">
+          <div class="tabs-bar" id="tabs-bar">
+            <button class="tab active" data-tab="all">All</button>
+            <button class="tab tab-live" data-tab="live">🔴 Live</button>
+            <button class="tab" data-tab="today">Today</button>
+            <button class="tab" data-tab="upcoming">Upcoming</button>
+            <button class="tab" data-tab="finished">Finished</button>
+          </div>
+        </div>
+
+        <!-- Search + Stage -->
+        <div class="filters-row">
+          <div class="search-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="search" id="team-search" placeholder="Search team…" />
+          </div>
+          <select id="stage-filter">
+            <option value="">All stages</option>
+            <option value="GROUP_STAGE">Group Stage</option>
+            <option value="LAST_32">Round of 32</option>
+            <option value="LAST_16">Round of 16</option>
+            <option value="QUARTER_FINALS">Quarter-finals</option>
+            <option value="SEMI_FINALS">Semi-finals</option>
+            <option value="THIRD_PLACE">3rd Place</option>
+            <option value="FINAL">Final</option>
+          </select>
+        </div>
+
+        <!-- Schedule -->
+        <main id="schedule"></main>
+
+        <!-- Mobile-only: standings + instructions -->
+        <div class="mobile-only">
+          <section id="standings-section-mobile" class="hidden">
+            <div class="section-hdr" style="padding:0 18px;margin-bottom:12px;">
+              <h2 class="section-title">Group Standings</h2>
+              <select id="group-select-mobile" class="group-select"></select>
+            </div>
+            <div style="padding:0 18px"><div id="standings-table-mobile" class="standings-card"></div></div>
+          </section>
+
+          <div class="info-card">
+            <div class="info-icon">📱</div>
+            <div>
+              <div class="info-title">Sync to iPhone Calendar</div>
+              <div class="info-body">Tap <strong>+ Cal</strong> on any match, or use <strong>⬇ .ics</strong> in the header to download the full schedule.</div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /panel-center -->
+
+      <!-- ── RIGHT PANEL ─────────────────────────────── -->
+      <aside class="panel-right desktop-only">
+
+        <div class="pr-section">
+          <div class="pr-heading" id="pr-live-label">Favorite Team</div>
+          <div id="hero-desktop" class="fav-team-container"></div>
+        </div>
+
+        <div class="pr-section" id="standings-section-desktop" style="display:none">
+          <div class="pr-section-hdr">
+            <div class="pr-heading">Group Standings</div>
+            <select id="group-select-desktop" class="group-select-sm"></select>
+          </div>
+          <div id="standings-table-desktop" class="standings-card"></div>
+        </div>
+
+        <div class="pr-section">
+          <div class="info-card-sm">
+            <div class="info-title-sm">📱 Sync to iPhone</div>
+            <div class="info-body-sm">Tap <strong>+ Cal</strong> on any match or use <strong>⬇ .ics</strong> in the header.</div>
+          </div>
+        </div>
+
+      </aside>
+
+    </div><!-- /dashboard-layout -->
   </div><!-- /main-content -->
 
   <footer>
-    <p>Data · <a href="https://www.football-data.org" target="_blank">football-data.org</a> &nbsp;·&nbsp; Times in your local timezone</p>
+    <p>Data · <a href="https://www.football-data.org" target="_blank">football-data.org</a> · Times in your local timezone</p>
   </footer>
 
   <script src="app.js"></script>
