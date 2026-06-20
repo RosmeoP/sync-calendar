@@ -1172,7 +1172,7 @@ footer {
   #schedule { padding-left: 0; padding-right: 0; }
   .info-card { padding-left: 0; padding-right: 0; }
   .hero-wrap { padding: 0 18px 8px; }
-  .fav-team-mobile-wrap { padding: 0 18px 8px; }
+  .fav-team-mobile-wrap { padding: 16px 18px 8px; }
   /* Narrow cards so they don't span edge-to-edge */
   #schedule .match-card {
     margin-left: 16px;
