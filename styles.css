@@ -1185,3 +1185,18 @@ footer {
   color: #000;
 }
 
+.fav-team-title .crest-wrap {
+  width: 36px;
+  height: 36px;
+}
+.fav-match-card .crest-wrap {
+  width: 24px;
+  height: 24px;
+}
+.fav-match-card .team-crest-placeholder {
+  font-size: 0.55rem;
+}
+.fav-team-title .team-crest-placeholder {
+  font-size: 0.72rem;
+}
+

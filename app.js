@@ -574,7 +574,7 @@ function renderFavTeamDashboard(container) {
          <div class="fav-stat-card"><div class="fav-stat-lbl">Rank</div><div class="fav-stat-val">#${standing.position}</div></div>
          <div class="fav-stat-card"><div class="fav-stat-lbl">Points</div><div class="fav-stat-val">${standing.points}</div></div>
        </div>`
-    : `<p style="font-size:0.65rem;color:var(--t3);margin-bottom:10px">Standings currently unavailable</p>`;
+    : `<p style="font-size:0.65rem;color:var(--t2);margin-bottom:10px">Standings currently unavailable</p>`;
 
   // Fetch Matches
   const teamMatches = allMatches.filter(m => m.homeTeam?.id === favoriteTeamId || m.awayTeam?.id === favoriteTeamId);
@@ -584,22 +584,26 @@ function renderFavTeamDashboard(container) {
     .filter(m => normStatus(m.status) === 'finished')
     .sort((a, b) => new Date(b.utcDate) - new Date(a.utcDate))[0];
 
-  let prevHTML = `<p style="font-size:0.65rem;color:var(--t3)">No previous match results</p>`;
+  let prevHTML = `<p style="font-size:0.65rem;color:var(--t2)">No previous match results</p>`;
   if (prevMatch) {
-    const isHome = prevMatch.homeTeam.id === favoriteTeamId;
-    const oppName = isHome ? prevMatch.awayTeam.name : prevMatch.homeTeam.name;
     const hScore = prevMatch.score?.fullTime?.home ?? 0;
     const aScore = prevMatch.score?.fullTime?.away ?? 0;
-    const resultText = isHome 
-      ? `${hScore} - ${aScore} vs ${oppName}`
-      : `${aScore} - ${hScore} vs ${oppName}`;
+    const hTLA = prevMatch.homeTeam.tla || prevMatch.homeTeam.name.slice(0,3).toUpperCase();
+    const aTLA = prevMatch.awayTeam.tla || prevMatch.awayTeam.name.slice(0,3).toUpperCase();
     prevHTML = `
       <div class="fav-match-card">
         <div class="fav-match-teams">
-          <span>vs ${oppName}</span>
+          <div style="display:flex;align-items:center;gap:6px">
+            ${buildCrest(prevMatch.homeTeam, prevMatch.homeTeam.name, false)}
+            <span>${hTLA}</span>
+          </div>
           <span class="fav-match-score">${hScore} - ${aScore}</span>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span>${aTLA}</span>
+            ${buildCrest(prevMatch.awayTeam, prevMatch.awayTeam.name, false)}
+          </div>
         </div>
-        <div class="fav-match-meta">${isHome ? 'Home' : 'Away'} · FT</div>
+        <div class="fav-match-meta">${prevMatch.homeTeam.id === favoriteTeamId ? 'Home' : 'Away'} · FT</div>
       </div>`;
   }
 
@@ -608,17 +612,34 @@ function renderFavTeamDashboard(container) {
     .filter(m => normStatus(m.status) !== 'finished')
     .sort((a, b) => new Date(a.utcDate) - new Date(b.utcDate))[0];
 
-  let nextHTML = `<p style="font-size:0.65rem;color:var(--t3)">No upcoming matches scheduled</p>`;
+  let nextHTML = `<p style="font-size:0.65rem;color:var(--t2)">No upcoming matches scheduled</p>`;
   if (nextMatch) {
-    const isHome = nextMatch.homeTeam.id === favoriteTeamId;
-    const oppName = isHome ? nextMatch.awayTeam.name : nextMatch.homeTeam.name;
+    const isLive = normStatus(nextMatch.status) === 'live';
+    const hScore = nextMatch.score?.fullTime?.home ?? 0;
+    const aScore = nextMatch.score?.fullTime?.away ?? 0;
+    const hTLA = nextMatch.homeTeam.tla || nextMatch.homeTeam.name.slice(0,3).toUpperCase();
+    const aTLA = nextMatch.awayTeam.tla || nextMatch.awayTeam.name.slice(0,3).toUpperCase();
+    
+    const scoreHTML = isLive 
+      ? `<span class="fav-match-score" style="color:var(--red)">${hScore} - ${aScore}</span>` 
+      : `<span style="font-size:0.68rem;color:var(--t2)">VS</span>`;
+      
     const dateStr = new Date(nextMatch.utcDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
     const timeStr = new Date(nextMatch.utcDate).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
-    const statusLabel = normStatus(nextMatch.status) === 'live' ? '🔴 LIVE' : `${dateStr} · ${timeStr}`;
+    const statusLabel = isLive ? '🔴 LIVE' : `${dateStr} · ${timeStr}`;
+    
     nextHTML = `
       <div class="fav-match-card">
         <div class="fav-match-teams">
-          <span>vs ${oppName}</span>
+          <div style="display:flex;align-items:center;gap:6px">
+            ${buildCrest(nextMatch.homeTeam, nextMatch.homeTeam.name, false)}
+            <span>${hTLA}</span>
+          </div>
+          ${scoreHTML}
+          <div style="display:flex;align-items:center;gap:6px">
+            <span>${aTLA}</span>
+            ${buildCrest(nextMatch.awayTeam, nextMatch.awayTeam.name, false)}
+          </div>
         </div>
         <div class="fav-match-meta">${statusLabel} ${nextMatch.venue ? `· ${nextMatch.venue}` : ''}</div>
       </div>`;
@@ -629,7 +650,8 @@ function renderFavTeamDashboard(container) {
     <div class="fav-team-box">
       <div class="fav-team-header">
         <div class="fav-team-title">
-          <span>⭐️ ${currentTeam.name}</span>
+          ${buildCrest(currentTeam, currentTeam.name, true)}
+          <span style="margin-left:2px">${currentTeam.name}</span>
         </div>
         <button id="fav-btn-edit" class="fav-btn-change">Change</button>
       </div>
@@ -680,10 +702,9 @@ function getFavTeamStanding(teamId) {
 function getUniqueTeams() {
   const map = new Map();
   allMatches.forEach(m => {
-    if (m.homeTeam?.id && m.homeTeam.name) map.set(m.homeTeam.id, m.homeTeam.name);
-    if (m.awayTeam?.id && m.awayTeam.name) map.set(m.awayTeam.id, m.awayTeam.name);
+    if (m.homeTeam?.id && m.homeTeam.name) map.set(m.homeTeam.id, m.homeTeam);
+    if (m.awayTeam?.id && m.awayTeam.name) map.set(m.awayTeam.id, m.awayTeam);
   });
-  return Array.from(map.entries())
-    .map(([id, name]) => ({ id, name }))
+  return Array.from(map.values())
     .sort((a, b) => a.name.localeCompare(b.name));
 }
