@@ -46,7 +46,10 @@ async function init() {
 
     // Load favorite team state
     const savedId = localStorage.getItem('fav_team_id');
-    if (savedId) favoriteTeamId = parseInt(savedId, 10);
+    if (savedId) {
+      const parsed = parseInt(savedId, 10);
+      favoriteTeamId = !isNaN(parsed) ? parsed : null;
+    }
 
     // Populate all sections
     renderMobileStats();
@@ -518,4 +521,48 @@ function showError(msg) {
     <p style="color:var(--red);font-size:.94rem;margin-bottom:14px">⚠️ ${msg}</p>
     <button class="btn-ghost" onclick="location.reload()">Retry</button>`;
   show(errorEl);
+}
+
+// ── Favorite Team Tracker Logic ──────────────────────────────────────────────
+function renderFavoriteTeamWidget() {
+  const container = document.getElementById('hero-desktop');
+  if (!container) return;
+
+  if (!favoriteTeamId) {
+    // Selector state
+    const teams = getUniqueTeams();
+    container.innerHTML = `
+      <div class="fav-team-box">
+        <div class="fav-select-label">Choose your team</div>
+        <select id="fav-team-select" class="fav-select-dropdown">
+          <option value="">-- Select Team --</option>
+          ${teams.map(t => `<option value="${t.id}">${t.name}</option>`).join('')}
+        </select>
+      </div>
+    `;
+
+    document.getElementById('fav-team-select').addEventListener('change', (e) => {
+      const val = e.target.value;
+      if (val) {
+        favoriteTeamId = parseInt(val, 10);
+        localStorage.setItem('fav_team_id', favoriteTeamId);
+        renderFavoriteTeamWidget();
+      }
+    });
+    return;
+  }
+
+  // Dashboard state (placeholder for now since Task 5 implements the full dashboard renderer)
+  container.innerHTML = `<div class="fav-team-box"><p style="font-size:0.7rem;color:var(--t2)">Loading dashboard...</p></div>`;
+}
+
+function getUniqueTeams() {
+  const map = new Map();
+  allMatches.forEach(m => {
+    if (m.homeTeam?.id && m.homeTeam.name) map.set(m.homeTeam.id, m.homeTeam.name);
+    if (m.awayTeam?.id && m.awayTeam.name) map.set(m.awayTeam.id, m.awayTeam.name);
+  });
+  return Array.from(map.entries())
+    .map(([id, name]) => ({ id, name }))
+    .sort((a, b) => a.name.localeCompare(b.name));
 }
