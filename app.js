@@ -714,35 +714,38 @@ function showError(msg) {
 
 // ── Favorite Team Tracker Logic ──────────────────────────────────────────────
 function renderFavoriteTeamWidget() {
-  const container = document.getElementById('hero-desktop');
-  if (!container) return;
+  const containers = [
+    document.getElementById('hero-desktop'),
+    document.getElementById('fav-team-mobile'),
+  ].filter(Boolean);
+  if (!containers.length) return;
 
   if (!favoriteTeamId) {
-    // Selector state
     const teams = getUniqueTeams();
-    container.innerHTML = `
+    const html = `
       <div class="fav-team-box">
-        <label for="fav-team-select" class="fav-select-label">Choose your team</label>
-        <select id="fav-team-select" class="fav-select-dropdown">
+        <label class="fav-select-label">Choose your team</label>
+        <select class="fav-team-select fav-select-dropdown">
           <option value="">-- Select Team --</option>
           ${teams.map(t => `<option value="${t.id}">${t.name}</option>`).join('')}
         </select>
       </div>
     `;
-
-    document.getElementById('fav-team-select').addEventListener('change', (e) => {
-      const val = e.target.value;
-      if (val) {
-        favoriteTeamId = parseInt(val, 10);
-        localStorage.setItem('fav_team_id', favoriteTeamId);
-        renderFavoriteTeamWidget();
-      }
+    containers.forEach(c => { c.innerHTML = html; });
+    document.querySelectorAll('.fav-team-select').forEach(sel => {
+      sel.addEventListener('change', (e) => {
+        const val = e.target.value;
+        if (val) {
+          favoriteTeamId = parseInt(val, 10);
+          localStorage.setItem('fav_team_id', favoriteTeamId);
+          renderFavoriteTeamWidget();
+        }
+      });
     });
     return;
   }
 
-  // Dashboard state
-  renderFavTeamDashboard(container);
+  containers.forEach(c => renderFavTeamDashboard(c));
 }
 
 function renderFavTeamDashboard(container) {
@@ -849,7 +852,7 @@ function renderFavTeamDashboard(container) {
           ${buildCrest(currentTeam, currentTeam.name, true)}
           <span style="margin-left:2px">${currentTeam.name}</span>
         </div>
-        <button id="fav-btn-edit" class="fav-btn-change">Change</button>
+        <button class="fav-btn-change">Change</button>
       </div>
       
       ${standingHTML}
@@ -860,18 +863,18 @@ function renderFavTeamDashboard(container) {
       <div class="fav-section-title">Next Match</div>
       ${nextHTML}
       
-      <button id="fav-btn-download-cal" class="fav-btn-sync">📅 Sync Team Calendar</button>
+      <button class="fav-btn-sync fav-btn-download-cal">📅 Sync Team Calendar</button>
     </div>
   `;
 
   // Listeners
-  document.getElementById('fav-btn-edit').addEventListener('click', () => {
+  container.querySelector('.fav-btn-change').addEventListener('click', () => {
     favoriteTeamId = null;
     localStorage.removeItem('fav_team_id');
     renderFavoriteTeamWidget();
   });
 
-  document.getElementById('fav-btn-download-cal').addEventListener('click', () => {
+  container.querySelector('.fav-btn-sync').addEventListener('click', () => {
     openCalModal(teamMatches, `${currentTeam.name.toLowerCase().replace(/\s/g, '-')}-calendar.ics`);
   });
 }
