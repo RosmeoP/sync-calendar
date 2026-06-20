@@ -2,6 +2,7 @@ let allMatches   = [];
 let allStandings = [];
 let activeTab    = 'all';
 let activeGroupIdx = 0;
+let favoriteTeamId = null;
 
 // ── DOM refs ──────────────────────────────────────────────────────────────────
 const mainContent    = document.getElementById('main-content');
@@ -43,16 +44,20 @@ async function init() {
     show(mainContent);
     show(downloadBtn);
 
+    // Load favorite team state
+    const savedId = localStorage.getItem('fav_team_id');
+    if (savedId) favoriteTeamId = parseInt(savedId, 10);
+
     // Populate all sections
     renderMobileStats();
     renderHero(document.getElementById('hero-section'), false);
     renderHero(document.getElementById('hero-center'), false);
-    renderHero(document.getElementById('hero-desktop'), true);
     renderOverview();
     renderNextMatches();
     renderTournamentProgress();
     renderStandings();
     renderSchedule();
+    renderFavoriteTeamWidget(); // New section
 
     // Tabs
     document.querySelectorAll('.tab').forEach(btn => {
