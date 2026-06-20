@@ -165,6 +165,49 @@
     <p>Data · <a href="https://www.football-data.org" target="_blank">football-data.org</a> · Times in your local timezone</p>
   </footer>
 
+  <!-- Calendar Customization Modal -->
+  <div id="cal-modal" class="cal-modal-overlay hidden" role="dialog" aria-modal="true" aria-label="Customize Calendar">
+    <div class="cal-modal-sheet">
+      <div class="cal-modal-handle"></div>
+      <div class="cal-modal-header">
+        <div class="cal-modal-title">Customize Calendar</div>
+        <button id="cal-modal-close" class="cal-modal-close" aria-label="Close">✕</button>
+      </div>
+
+      <!-- Emoji -->
+      <div class="cal-opt-group">
+        <div class="cal-opt-label">Event Emoji</div>
+        <div class="cal-emoji-grid" id="cal-emoji-grid"></div>
+      </div>
+
+      <!-- Color -->
+      <div class="cal-opt-group">
+        <div class="cal-opt-label">Calendar Color</div>
+        <div class="cal-color-grid" id="cal-color-grid"></div>
+      </div>
+
+      <!-- Scores toggle -->
+      <div class="cal-opt-group">
+        <label class="cal-toggle-row">
+          <div>
+            <div class="cal-toggle-title">Include scores in event title</div>
+            <div class="cal-toggle-sub">For finished matches only</div>
+          </div>
+          <div class="cal-toggle-wrap">
+            <input type="checkbox" id="cal-scores-toggle" class="cal-toggle-input" />
+            <span class="cal-toggle-track"></span>
+          </div>
+        </label>
+      </div>
+
+      <!-- Buttons -->
+      <div class="cal-modal-actions">
+        <button id="cal-download-btn" class="cal-btn-download">⬇ Download .ics</button>
+        <button id="cal-delete-btn" class="cal-btn-delete">🗑 Delete events from Calendar</button>
+      </div>
+    </div>
+  </div>
+
   <script src="app.js"></script>
 </body>
 </html>

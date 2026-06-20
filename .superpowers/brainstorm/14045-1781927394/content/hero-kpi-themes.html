@@ -1,0 +1,662 @@
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  .kpi-brainstorm-container {
+    font-family: 'DM Sans', sans-serif;
+    color: #f5f5f7;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  
+  /* Mock app container background for realism */
+  .preview-wrapper {
+    background: #08090c;
+    background-image: 
+      radial-gradient(ellipse 110% 55% at 50% -5%, rgba(255,255,255,0.04) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at -10% 10%, rgba(22,60,28,0.6) 0%, transparent 55%);
+    padding: 30px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .mock-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .mock-title-badge {
+    background: rgba(255, 255, 255, 0.1);
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: normal;
+  }
+
+  /* Shared Mock CSS matching app's layout */
+  .mock-hero-card {
+    border-radius: 20px;
+    padding: 20px 20px 18px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+  }
+  
+  .mock-hero-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  
+  .mock-badge {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  
+  .mock-badge-stage {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  
+  .mock-badge-live {
+    background: rgba(255, 59, 48, 0.12);
+    color: #ff453a;
+    border: 1px solid rgba(255, 59, 48, 0.25);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .mock-live-dot {
+    width: 6px;
+    height: 6px;
+    background: #ff453a;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #ff453a;
+    animation: mock-pulse 1.5s infinite;
+  }
+  
+  @keyframes mock-pulse {
+    0% { transform: scale(0.9); opacity: 0.6; }
+    50% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(0.9); opacity: 0.6; }
+  }
+  
+  .mock-teams-display {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 16px 0;
+  }
+  
+  .mock-team-side {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .mock-crest-wrap {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    padding: 6px;
+  }
+  
+  .mock-crest {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  
+  .mock-team-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 2px;
+    max-width: 130px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .mock-team-tla {
+    font-size: 0.72rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+  }
+  
+  .mock-score-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 100px;
+    text-align: center;
+  }
+  
+  .mock-score-main {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.4rem;
+    line-height: 1;
+    letter-spacing: 4px;
+  }
+  
+  .mock-score-time-live {
+    font-size: 0.72rem;
+    font-weight: 700;
+    font-family: 'Barlow Condensed', sans-serif;
+    color: #ff453a;
+    letter-spacing: 0.05em;
+    margin-top: 4px;
+  }
+  
+  .mock-hero-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  
+  .mock-venue {
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.5);
+  }
+  
+  .mock-btn-cal {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  /* ──────────────────────────────────────────────────
+   * STYLE OPTIONS SPECIFICS
+   * ────────────────────────────────────────────────── */
+   
+  /* OPTION A: Refined iOS Liquid Light Glass (Current Iteration Evolved) */
+  .theme-light-glass {
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(28px) saturate(190%);
+    -webkit-backdrop-filter: blur(28px) saturate(190%);
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-top-color: rgba(255, 255, 255, 0.55);
+    border-left-color: rgba(255, 255, 255, 0.55);
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 0.6),
+      0 12px 36px rgba(0, 0, 0, 0.2);
+    color: #1c1c1e;
+  }
+  
+  .theme-light-glass::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 8%; right: 8%;
+    height: 1.5px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
+  }
+  
+  .theme-light-glass .mock-badge-stage {
+    background: rgba(0, 0, 0, 0.05);
+    color: rgba(28, 28, 30, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+  
+  .theme-light-glass .mock-team-tla {
+    color: rgba(28, 28, 30, 0.5);
+  }
+  
+  .theme-light-glass .mock-crest-wrap {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: rgba(0, 0, 0, 0.08);
+  }
+  
+  .theme-light-glass .mock-hero-footer {
+    border-top-color: rgba(0, 0, 0, 0.06);
+  }
+  
+  .theme-light-glass .mock-venue {
+    color: rgba(28, 28, 30, 0.5);
+  }
+  
+  .theme-light-glass .mock-btn-cal {
+    background: rgba(0, 0, 0, 0.05);
+    color: #1c1c1e;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+  
+  .theme-light-glass .mock-btn-cal:hover {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  /* OPTION B: Prestige Gold Dark Glass (Prestige Stadium Theme) */
+  .theme-prestige-gold {
+    background: rgba(14, 16, 22, 0.82);
+    backdrop-filter: blur(28px) saturate(160%);
+    -webkit-backdrop-filter: blur(28px) saturate(160%);
+    border: 1px solid rgba(212, 175, 55, 0.22); /* gold tint border */
+    border-top-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 0 24px rgba(212, 175, 55, 0.04), /* subtle gold ambient aura */
+      0 12px 36px rgba(0, 0, 0, 0.4);
+    color: #ffffff;
+  }
+  
+  .theme-prestige-gold::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.4), transparent);
+  }
+  
+  .theme-prestige-gold .mock-badge-stage {
+    background: rgba(212, 175, 55, 0.08);
+    color: #f3e5ab;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+  }
+  
+  .theme-prestige-gold .mock-team-tla {
+    color: rgba(255, 255, 255, 0.5);
+  }
+  
+  .theme-prestige-gold .mock-crest-wrap {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(212, 175, 55, 0.15);
+  }
+  
+  .theme-prestige-gold .mock-hero-footer {
+    border-top-color: rgba(255, 255, 255, 0.06);
+  }
+  
+  .theme-prestige-gold .mock-venue {
+    color: rgba(255, 255, 255, 0.45);
+  }
+  
+  .theme-prestige-gold .mock-btn-cal {
+    background: rgba(212, 175, 55, 0.1);
+    color: #f3e5ab;
+    border: 1px solid rgba(212, 175, 55, 0.25);
+  }
+  
+  .theme-prestige-gold .mock-btn-cal:hover {
+    background: rgba(212, 175, 55, 0.18);
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
+  }
+
+  /* OPTION C: Dynamic Adaptive Mesh (Active State Gradient Overlay) */
+  .theme-adaptive-mesh-live {
+    background: 
+      radial-gradient(circle at 100% 0%, rgba(255,59,48,0.2) 0%, transparent 60%),
+      radial-gradient(circle at 0% 100%, rgba(48,209,88,0.1) 0%, transparent 60%),
+      rgba(15, 17, 24, 0.85);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-top-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 0 25px rgba(255, 59, 48, 0.06), /* active live ambient glow */
+      0 12px 36px rgba(0, 0, 0, 0.4);
+    color: #ffffff;
+  }
+  
+  /* Specular lens reflection animation */
+  .theme-adaptive-mesh-live::before {
+    content: '';
+    position: absolute;
+    top: -100px; left: -100px; right: -100px; bottom: -100px;
+    background: radial-gradient(circle at 50% 30%, rgba(255,255,255,0.03) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  
+  .theme-adaptive-mesh-live .mock-badge-stage {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  
+  .theme-adaptive-mesh-live .mock-team-tla {
+    color: rgba(255, 255, 255, 0.5);
+  }
+  
+  .theme-adaptive-mesh-live .mock-crest-wrap {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .theme-adaptive-mesh-live .mock-hero-footer {
+    border-top-color: rgba(255, 255, 255, 0.06);
+  }
+  
+  .theme-adaptive-mesh-live .mock-venue {
+    color: rgba(255, 255, 255, 0.45);
+  }
+  
+  .theme-adaptive-mesh-live .mock-btn-cal {
+    background: rgba(255, 255, 255, 0.06);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  
+  .theme-adaptive-mesh-live .mock-btn-cal:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+  
+  /* OPTION C (UPCOMING STATE) */
+  .theme-adaptive-mesh-upcoming {
+    background: 
+      radial-gradient(circle at 100% 0%, rgba(48,209,88,0.15) 0%, transparent 60%),
+      rgba(15, 17, 24, 0.85);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-top-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 12px 36px rgba(0, 0, 0, 0.4);
+    color: #ffffff;
+  }
+  
+  .theme-adaptive-mesh-upcoming .mock-badge-stage {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  
+  .theme-adaptive-mesh-upcoming .mock-badge-upcoming {
+    background: rgba(48, 209, 88, 0.12);
+    color: #30d158;
+    border: 1px solid rgba(48, 209, 88, 0.25);
+  }
+  
+  .theme-adaptive-mesh-upcoming .mock-score-main {
+    font-size: 1.8rem;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.3);
+    letter-spacing: 0.1em;
+    margin-top: 10px;
+  }
+  
+  .theme-adaptive-mesh-upcoming .mock-score-time {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.85);
+    margin-top: 2px;
+  }
+</style>
+
+<div class="kpi-brainstorm-container">
+  <h2>Improve the Hero Match KPI Card</h2>
+  <p class="subtitle">Select one of the proposed design directions to refresh the top-featured Match Hero card UI.</p>
+
+  <div class="options">
+  
+    <!-- OPTION A -->
+    <div class="option" data-choice="a" onclick="toggleSelect(this)">
+      <div class="letter">A</div>
+      <div class="content">
+        <h3>Option A: iOS Liquid Light Glass (Evolved iOS Light Widget)</h3>
+        <p style="margin-bottom: 12px;">Keeps the high-contrast light card style, matching iOS widget designs with sharp, crisp black-on-white text, clean circular crest wraps, and premium liquid specular reflection.</p>
+        
+        <div class="preview-wrapper">
+          <div class="mock-title">
+            <span>Visual Preview:</span>
+            <span class="mock-title-badge">Light Mode Card on Dark Dashboard</span>
+          </div>
+          
+          <div class="mock-hero-card theme-light-glass">
+            <div class="mock-hero-top">
+              <span class="mock-badge mock-badge-stage">Group B · Match 12</span>
+              <span class="mock-badge mock-badge-live"><span class="mock-live-dot"></span> LIVE 72'</span>
+            </div>
+            <div class="mock-teams-display">
+              <div class="mock-team-side">
+                <div class="mock-crest-wrap">
+                  <img class="mock-crest" src="https://crests.football-data.org/784.png" alt="USA">
+                </div>
+                <span class="mock-team-name">United States</span>
+                <span class="mock-team-tla">USA</span>
+              </div>
+              <div class="mock-score-center">
+                <span class="mock-score-main">2thinsp;:&thinsp;1</span>
+                <span class="mock-score-time-live">72'</span>
+              </div>
+              <div class="mock-team-side">
+                <div class="mock-crest-wrap">
+                  <img class="mock-crest" src="https://crests.football-data.org/770.png" alt="England">
+                </div>
+                <span class="mock-team-name">England</span>
+                <span class="mock-team-tla">ENG</span>
+              </div>
+            </div>
+            <div class="mock-hero-footer">
+              <span class="mock-venue">📍 SoFi Stadium, Los Angeles</span>
+              <button class="mock-btn-cal">+ Add to Calendar</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="pros-cons">
+          <div class="pros">
+            <h4>Pros</h4>
+            <ul>
+              <li>Stands out immediately on the page as the "Hero" element</li>
+              <li>iOS widget styling is clean, extremely readable, and familiar</li>
+              <li>Strong visual priority over the main list</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <h4>Cons</h4>
+            <ul>
+              <li>Contrast with the overall dark dashboard can feel jarring to some users</li>
+              <li>Doesn't feel fully unified with the dark stadium theme</li>
+            </ul>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    
+    <!-- OPTION B -->
+    <div class="option" data-choice="b" onclick="toggleSelect(this)">
+      <div class="letter">B</div>
+      <div class="content">
+        <h3>Option B: Prestige Gold Dark Glass (The Champion Edition)</h3>
+        <p style="margin-bottom: 12px;">Integrates directly into the dark theme. Uses a deep dark background with a luxurious 24k gold thin border reflection, gold themed secondary badges, and amber-glow hover actions to signify a tournament champion's prestige.</p>
+        
+        <div class="preview-wrapper">
+          <div class="mock-title">
+            <span>Visual Preview:</span>
+            <span class="mock-title-badge">Dark Mode Gold-Accented Card</span>
+          </div>
+          
+          <div class="mock-hero-card theme-prestige-gold">
+            <div class="mock-hero-top">
+              <span class="mock-badge mock-badge-stage">Group B · Match 12</span>
+              <span class="mock-badge mock-badge-live"><span class="mock-live-dot"></span> LIVE 72'</span>
+            </div>
+            <div class="mock-teams-display">
+              <div class="mock-team-side">
+                <div class="mock-crest-wrap">
+                  <img class="mock-crest" src="https://crests.football-data.org/784.png" alt="USA">
+                </div>
+                <span class="mock-team-name">United States</span>
+                <span class="mock-team-tla">USA</span>
+              </div>
+              <div class="mock-score-center">
+                <span class="mock-score-main">2thinsp;:&thinsp;1</span>
+                <span class="mock-score-time-live">72'</span>
+              </div>
+              <div class="mock-team-side">
+                <div class="mock-crest-wrap">
+                  <img class="mock-crest" src="https://crests.football-data.org/770.png" alt="England">
+                </div>
+                <span class="mock-team-name">England</span>
+                <span class="mock-team-tla">ENG</span>
+              </div>
+            </div>
+            <div class="mock-hero-footer">
+              <span class="mock-venue">📍 SoFi Stadium, Los Angeles</span>
+              <button class="mock-btn-cal">+ Add to Calendar</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="pros-cons">
+          <div class="pros">
+            <h4>Pros</h4>
+            <ul>
+              <li>Blends seamlessly with the dark stadium theme background</li>
+              <li>Gold accents look highly premium, premium, and sophisticated</li>
+              <li>Feels like a physical luxury item / sports dashboard element</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <h4>Cons</h4>
+            <ul>
+              <li>Less stark separation from the rest of the dark sidebar elements</li>
+              <li>Relies on subtle borders for spatial layout separation</li>
+            </ul>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    
+    <!-- OPTION C -->
+    <div class="option" data-choice="c" onclick="toggleSelect(this)">
+      <div class="letter">C</div>
+      <div class="content">
+        <h3>Option C: Dynamic Adaptive Mesh (The Smart State Card)</h3>
+        <p style="margin-bottom: 12px;">Shifts background meshes and glow glows depending on the match status. Live matches get a vibrant deep-red and green atmospheric gradient overlay with active glow. Upcoming matches get a cool dark teal mesh countdown card.</p>
+        
+        <div class="preview-wrapper">
+          <div class="mock-title">
+            <span>Visual Preview:</span>
+            <span class="mock-title-badge">Live Match Mesh Mode</span>
+          </div>
+          
+          <div class="mock-hero-card theme-adaptive-mesh-live">
+            <div class="mock-hero-top">
+              <span class="mock-badge mock-badge-stage">Group B · Match 12</span>
+              <span class="mock-badge mock-badge-live"><span class="mock-live-dot"></span> LIVE 72'</span>
+            </div>
+            <div class="mock-teams-display">
+              <div class="mock-team-side">
+                <div class="mock-crest-wrap">
+                  <img class="mock-crest" src="https://crests.football-data.org/784.png" alt="USA">
+                </div>
+                <span class="mock-team-name">United States</span>
+                <span class="mock-team-tla">USA</span>
+              </div>
+              <div class="mock-score-center">
+                <span class="mock-score-main">2thinsp;:&thinsp;1</span>
+                <span class="mock-score-time-live">72'</span>
+              </div>
+              <div class="mock-team-side">
+                <div class="mock-crest-wrap">
+                  <img class="mock-crest" src="https://crests.football-data.org/770.png" alt="England">
+                </div>
+                <span class="mock-team-name">England</span>
+                <span class="mock-team-tla">ENG</span>
+              </div>
+            </div>
+            <div class="mock-hero-footer">
+              <span class="mock-venue">📍 SoFi Stadium, Los Angeles</span>
+              <button class="mock-btn-cal">+ Add to Calendar</button>
+            </div>
+          </div>
+          
+          <div class="mock-title" style="margin-top: 24px;">
+            <span>Visual Preview:</span>
+            <span class="mock-title-badge">Upcoming Match Mesh Mode</span>
+          </div>
+          
+          <div class="mock-hero-card theme-adaptive-mesh-upcoming">
+            <div class="mock-hero-top">
+              <span class="mock-badge mock-badge-stage">Group C · Match 15</span>
+              <span class="mock-badge mock-badge-upcoming">Upcoming</span>
+            </div>
+            <div class="mock-teams-display">
+              <div class="mock-team-side">
+                <div class="mock-crest-wrap">
+                  <img class="mock-crest" src="https://crests.football-data.org/762.png" alt="Argentina">
+                </div>
+                <span class="mock-team-name">Argentina</span>
+                <span class="mock-team-tla">ARG</span>
+              </div>
+              <div class="mock-score-center">
+                <span class="mock-score-main">VS</span>
+                <span class="mock-score-time">21:00</span>
+              </div>
+              <div class="mock-team-side">
+                <div class="mock-crest-wrap">
+                  <img class="mock-crest" src="https://crests.football-data.org/764.png" alt="Mexico">
+                </div>
+                <span class="mock-team-name">Mexico</span>
+                <span class="mock-team-tla">MEX</span>
+              </div>
+            </div>
+            <div class="mock-hero-footer">
+              <span class="mock-venue">📍 Azteca, Mexico City</span>
+              <button class="mock-btn-cal">+ Add to Calendar</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="pros-cons">
+          <div class="pros">
+            <h4>Pros</h4>
+            <ul>
+              <li>The UI actively reflects the energy of the match state (Live feels hot, Upcoming feels cool)</li>
+              <li>Gradient meshes look extremely modern and premium, similar to Apple/Stripe pages</li>
+              <li>Maintains dark theme unity while adding custom colorful emphasis</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <h4>Cons</h4>
+            <ul>
+              <li>Slightly more complex CSS background gradients to manage</li>
+              <li>Vibrant colors might compete with team crests</li>
+            </ul>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    
+  </div>
+</div>

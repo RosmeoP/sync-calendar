@@ -202,101 +202,146 @@ header {
 /* ── Hero ───────────────────────────────────────────────────────────────────── */
 #hero-section { padding: 0 18px 8px; }
 
+/* Gradient orb backdrop — gives the blur something to render */
+.hero-wrap,
+.hero-center-wrap {
+  position: relative;
+  isolation: isolate;
+}
+
+.hero-wrap::before,
+.hero-center-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -20px;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 70% 80% at 20% 50%, rgba(255, 255, 255, 0.65) 0%, transparent 65%),
+    radial-gradient(ellipse 65% 75% at 80% 40%, rgba(255, 255, 255, 0.55) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 60% at 50% 90%, rgba(255, 255, 255, 0.40) 0%, transparent 60%);
+  filter: blur(28px);
+  border-radius: var(--r-xl);
+  pointer-events: none;
+}
+
 .hero-card {
-  background: rgba(255, 255, 255, 0.90);
-  backdrop-filter: blur(30px) saturate(190%);
-  -webkit-backdrop-filter: blur(30px) saturate(190%);
-  border: 1px solid rgba(0, 0, 0, 0.07);
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(36px) saturate(180%);
+  -webkit-backdrop-filter: blur(36px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.30);
   border-top-color: rgba(255, 255, 255, 0.55);
-  border-left-color: rgba(255, 255, 255, 0.55);
+  border-left-color: rgba(255, 255, 255, 0.40);
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+  border-right-color: rgba(255, 255, 255, 0.12);
   border-radius: var(--r-xl);
   padding: 20px 20px 18px;
   position: relative;
   overflow: hidden;
-  box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.65),
-    0 12px 40px rgba(0, 0, 0, 0.25);
-  color: #1c1c1e;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.08),
+    0 8px 32px rgba(0, 0, 0, 0.40),
+    0 2px 8px rgba(0, 0, 0, 0.25);
+  color: var(--t1);
 }
 
+/* Top-edge shimmer */
 .hero-card::before {
   content: '';
   position: absolute;
   top: 0; left: 8%; right: 8%;
-  height: 1.5px;
+  height: 1px;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.75), transparent);
+  pointer-events: none;
 }
 
-.hero-card.is-live { 
-  border-color: rgba(0, 0, 0, 0.08);
-  border-top-color: rgba(255, 255, 255, 0.65);
-  border-left-color: rgba(255, 255, 255, 0.65);
-  box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.70),
-    0 0 25px rgba(255, 255, 255, 0.2),
-    0 12px 40px rgba(0, 0, 0, 0.28);
+/* Diagonal gloss layer */
+.hero-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--r-xl);
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.18) 0%,
+    rgba(255,255,255,0.04) 45%,
+    transparent 100%
+  );
+  pointer-events: none;
 }
 
-/* iOS Light-glass Text & Badge overrides */
+.hero-card.is-live {
+  border-color: rgba(255, 255, 255, 0.35);
+  border-top-color: rgba(255, 255, 255, 0.60);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.60),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.10),
+    0 0 32px rgba(255, 255, 255, 0.20),
+    0 8px 32px rgba(0, 0, 0, 0.45),
+    0 2px 8px rgba(0, 0, 0, 0.28);
+}
+
+/* Glassmorphic Text & Badge overrides */
 .hero-card .team-name-hero {
-  color: #1c1c1e !important;
-  text-shadow: none !important;
+  color: var(--t1) !important;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.35) !important;
 }
 
 .hero-card .team-tla {
-  color: rgba(28, 28, 30, 0.55) !important;
+  color: var(--t2) !important;
 }
 
 .hero-card .score-main {
-  color: #1c1c1e !important;
+  color: var(--t1) !important;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.3) !important;
 }
 
 .hero-card .score-vs {
-  color: rgba(28, 28, 30, 0.45) !important;
+  color: var(--t3) !important;
 }
 
 .hero-card .score-time {
-  color: #1c1c1e !important;
+  color: var(--t1) !important;
 }
 
 .hero-card .venue-small {
-  color: rgba(28, 28, 30, 0.55) !important;
+  color: var(--t2) !important;
 }
 
 .hero-card .badge-stage {
-  background: rgba(0, 0, 0, 0.05) !important;
-  color: rgba(28, 28, 30, 0.7) !important;
-  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  background: rgba(255, 255, 255, 0.10) !important;
+  color: var(--t2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
 }
 
 .hero-card .badge-ft {
-  background: rgba(0, 0, 0, 0.05) !important;
-  color: rgba(28, 28, 30, 0.6) !important;
-  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: var(--t2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
 }
 
 .hero-card .badge-upcoming {
-  background: rgba(48, 209, 88, 0.12) !important;
-  color: #24b248 !important;
-  border: 1px solid rgba(48, 209, 88, 0.25) !important;
+  background: var(--green-tint) !important;
+  color: var(--green) !important;
+  border: 1px solid var(--green-edge) !important;
 }
 
 .hero-card .badge-live {
-  background: rgba(255, 59, 48, 0.12) !important;
-  color: #d12c22 !important;
-  border: 1px solid rgba(255, 59, 48, 0.25) !important;
+  background: var(--red-tint) !important;
+  color: var(--red) !important;
+  border: 1px solid var(--red-edge) !important;
 }
 
 .hero-card .btn-cal-hero {
-  background: rgba(0, 0, 0, 0.05) !important;
-  color: #1c1c1e !important;
-  border: 1px solid rgba(0, 0, 0, 0.08) !important;
-  box-shadow: none !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: var(--t1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.15) !important;
   transition: background 0.15s, transform 0.1s;
 }
 
 .hero-card .btn-cal-hero:hover {
-  background: rgba(0, 0, 0, 0.1) !important;
+  background: rgba(255, 255, 255, 0.20) !important;
 }
 
 .hero-card .btn-cal-hero:active {
@@ -304,28 +349,28 @@ header {
 }
 
 .hero-card .btn-cal-hero:focus-visible {
-  outline: 2px solid #1c1c1e !important;
+  outline: 2px solid rgba(255,255,255,0.6) !important;
   outline-offset: 2px;
 }
 
 .hero-card .score-time-live {
-  color: #d12c22 !important;
-  background: rgba(255, 59, 48, 0.12) !important;
-  border: 1px solid rgba(255, 59, 48, 0.25) !important;
+  color: var(--red) !important;
+  background: var(--red-tint) !important;
+  border: 1px solid var(--red-edge) !important;
 }
 
 .hero-card .team-crest-placeholder {
-  color: #1c1c1e !important;
-  background: rgba(255, 255, 255, 0.95) !important;
-  border-color: rgba(0, 0, 0, 0.06) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06) !important;
-  text-shadow: none !important;
+  color: var(--t1) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3) !important;
 }
 
 .hero-card .team-crest {
-  border-color: rgba(0, 0, 0, 0.06) !important;
-  background: rgba(255, 255, 255, 0.95) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
   padding: 6px !important;
 }
 
@@ -1068,11 +1113,11 @@ footer {
 #hero-desktop .crest-wrap { width: 48px; height: 48px; }
 #hero-desktop .crest-wrap.large { width: 54px; height: 54px; }
 #hero-desktop .team-name-hero { font-size: 0.82rem; max-width: 72px; }
-#hero-desktop .score-main.hero-score { font-size: 2.6rem; letter-spacing: 6px; }
+#hero-desktop .score-main.hero-score { font-size: 2.4rem; letter-spacing: 4px; }
 #hero-desktop .score-vs { font-size: 1rem; }
 #hero-desktop .score-time { font-size: 1rem; }
 #hero-desktop .score-center { min-width: 66px; }
-#hero-desktop .hero-footer { margin-top: 14px; }
+#hero-desktop .hero-footer { margin-top: 14px; border-top-color: rgba(0, 0, 0, 0.06); }
 #hero-desktop .btn-cal-hero { font-size: 0.7rem; padding: 7px 12px; }
 #hero-desktop #hero-section { padding: 0; }
 
@@ -1323,5 +1368,279 @@ footer {
   display: inline-block;
   margin-top: 5px;
 }
+
+/* ── Calendar Customization Modal ───────────────────────────────────────────── */
+.cal-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+  animation: cal-fade-in 0.2s ease;
+}
+
+@keyframes cal-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.cal-modal-sheet {
+  width: 100%;
+  max-width: 480px;
+  background: rgba(22, 24, 28, 0.85);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-top-color: rgba(255, 255, 255, 0.22);
+  border-radius: 24px 24px 0 0;
+  padding: 12px 20px 32px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 -8px 40px rgba(0, 0, 0, 0.55);
+  animation: cal-slide-up 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@media (min-width: 520px) {
+  .cal-modal-overlay {
+    align-items: center;
+    padding: 20px;
+  }
+  .cal-modal-sheet {
+    border-radius: 20px;
+    padding: 20px 24px 24px;
+  }
+}
+
+@keyframes cal-slide-up {
+  from { transform: translateY(100%); opacity: 0.6; }
+  to   { transform: translateY(0);    opacity: 1;   }
+}
+
+.cal-modal-handle {
+  width: 36px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 2px;
+  margin: 0 auto 16px;
+}
+
+@media (min-width: 520px) {
+  .cal-modal-handle { display: none; }
+}
+
+.cal-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.cal-modal-title {
+  font-family: var(--f-label);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--t1);
+}
+
+.cal-modal-close {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.10);
+  color: var(--t2);
+  font-size: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.cal-modal-close:hover { background: rgba(255, 255, 255, 0.18); }
+
+.cal-opt-group {
+  margin-bottom: 20px;
+}
+
+.cal-opt-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--t3);
+  margin-bottom: 10px;
+}
+
+/* Emoji grid */
+.cal-emoji-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cal-emoji-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--r-md);
+  border: 1.5px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 1.3rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, border-color 0.12s, transform 0.1s;
+}
+
+.cal-emoji-btn:hover { background: rgba(255, 255, 255, 0.12); }
+.cal-emoji-btn:active { transform: scale(0.92); }
+
+.cal-emoji-btn.selected {
+  border-color: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
+}
+
+/* Color grid */
+.cal-color-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.cal-color-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.12s, border-color 0.12s;
+  position: relative;
+}
+
+.cal-color-btn:hover { transform: scale(1.15); }
+.cal-color-btn:active { transform: scale(0.95); }
+
+.cal-color-btn.selected {
+  border-color: rgba(255, 255, 255, 0.80);
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.3);
+}
+
+/* Toggle */
+.cal-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  gap: 12px;
+}
+
+.cal-toggle-title {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--t1);
+}
+
+.cal-toggle-sub {
+  font-size: 0.72rem;
+  color: var(--t3);
+  margin-top: 2px;
+}
+
+.cal-toggle-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.cal-toggle-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.cal-toggle-track {
+  display: block;
+  width: 44px;
+  height: 26px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 13px;
+  position: relative;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+.cal-toggle-track::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s;
+}
+
+.cal-toggle-input:checked + .cal-toggle-track {
+  background: var(--green);
+  border-color: var(--green);
+}
+
+.cal-toggle-input:checked + .cal-toggle-track::after {
+  transform: translateX(18px);
+  background: #fff;
+}
+
+/* Action buttons */
+.cal-modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.cal-btn-download {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--r-lg);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--t1);
+  font-family: var(--f-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.15);
+}
+
+.cal-btn-download:hover  { background: rgba(255, 255, 255, 0.22); }
+.cal-btn-download:active { transform: scale(0.98); }
+
+.cal-btn-delete {
+  width: 100%;
+  padding: 13px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--red-edge);
+  background: var(--red-tint);
+  color: var(--red);
+  font-family: var(--f-body);
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.cal-btn-delete:hover  { background: rgba(255, 59, 48, 0.22); }
+.cal-btn-delete:active { transform: scale(0.98); }
 
 

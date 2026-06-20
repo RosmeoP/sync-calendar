@@ -4,6 +4,27 @@ let activeTab    = 'all';
 let activeGroupIdx = 0;
 let favoriteTeamId = null;
 
+// ── Calendar prefs ────────────────────────────────────────────────────────────
+const CAL_EMOJIS = ['🏆','⚽','🌍','🎯','🔥','📅','🥅','🌐'];
+const CAL_COLORS = [
+  { hex: '#007AFF', label: 'Blue'   },
+  { hex: '#30D158', label: 'Green'  },
+  { hex: '#FF3B30', label: 'Red'    },
+  { hex: '#FF9F0A', label: 'Orange' },
+  { hex: '#FFD60A', label: 'Yellow' },
+  { hex: '#BF5AF2', label: 'Purple' },
+  { hex: '#FF2D55', label: 'Pink'   },
+  { hex: '#5AC8FA', label: 'Teal'   },
+  { hex: '#FFFFFF', label: 'White'  },
+];
+
+let calPrefs = { emoji: '🏆', color: '#007AFF', includeScores: false };
+try { Object.assign(calPrefs, JSON.parse(localStorage.getItem('cal_prefs') || '{}')); } catch {}
+
+// Current modal context
+let _calModalMatches  = [];
+let _calModalFilename = 'world-cup-2026.ics';
+
 // ── DOM refs ──────────────────────────────────────────────────────────────────
 const mainContent    = document.getElementById('main-content');
 const loadingEl      = document.getElementById('loading');
@@ -77,7 +98,7 @@ async function init() {
 
     downloadBtn.addEventListener('click', () => {
       const visible = getFiltered();
-      if (visible.length) downloadICS(visible, 'world-cup-2026.ics');
+      if (visible.length) openCalModal(visible, 'world-cup-2026.ics');
     });
 
   } catch (err) {
@@ -370,14 +391,8 @@ function buildMatchCard(m, isHero) {
   if (st === 'live') {
     if (m.status === 'HALFTIME') {
       badgeText = 'HT';
-      liveTimeHTML = `<span class="score-time-live">HT</span>`;
     } else if (m.status === 'PAUSED') {
       badgeText = 'PAUSED';
-      liveTimeHTML = `<span class="score-time-live">PAUSED</span>`;
-    } else {
-      const min = getMatchMinute(m);
-      badgeText = `LIVE ${min}'`;
-      liveTimeHTML = `<span class="score-time-live">${min}'</span>`;
     }
   }
 
@@ -423,7 +438,7 @@ function buildMatchCard(m, isHero) {
     </div>`;
 
   card.querySelector(isHero ? '.btn-cal-hero' : '.btn-cal')
-    .addEventListener('click', () => downloadICS([m], `wc2026-${home.replace(/\s/g,'-')}-vs-${away.replace(/\s/g,'-')}.ics`));
+    .addEventListener('click', () => openCalModal([m], `wc2026-${home.replace(/\s/g,'-')}-vs-${away.replace(/\s/g,'-')}.ics`));
 
   return card;
 }
@@ -457,7 +472,8 @@ function getFiltered() {
 }
 
 // ── ICS ───────────────────────────────────────────────────────────────────────
-function generateICS(matches) {
+function generateICS(matches, opts = {}) {
+  const { emoji = '🏆', color = '#007AFF', includeScores = false } = opts;
   const stamp = fmtICS(new Date());
   const events = matches.map(m => {
     const start = new Date(m.utcDate);
@@ -465,27 +481,118 @@ function generateICS(matches) {
     const home  = m.homeTeam?.name || 'TBD';
     const away  = m.awayTeam?.name || 'TBD';
     let desc    = fmtStage(m.stage, m.group);
+    let summary = `${emoji} ${home} vs ${away}`;
     if (m.status === 'FINISHED') {
       const h = m.score?.fullTime?.home ?? '–';
       const a = m.score?.fullTime?.away ?? '–';
       desc += `\\nResult: ${home} ${h} – ${a} ${away}`;
+      if (includeScores) summary = `${emoji} ${home} ${h}–${a} ${away}`;
     }
     return ['BEGIN:VEVENT', `UID:wc2026-${m.id}@worldcup2026`,
       `DTSTAMP:${stamp}`, `DTSTART:${fmtICS(start)}`, `DTEND:${fmtICS(end)}`,
-      `SUMMARY:🏆 ${home} vs ${away}`, `DESCRIPTION:${desc}`,
+      `SUMMARY:${summary}`, `DESCRIPTION:${desc}`,
       m.venue ? `LOCATION:${m.venue}` : '', 'END:VEVENT'].filter(Boolean).join('\r\n');
   });
-  return ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//World Cup 2026//EN',
-    'CALSCALE:GREGORIAN','METHOD:PUBLISH','X-WR-CALNAME:FIFA World Cup 2026',
-    'X-WR-TIMEZONE:UTC', ...events, 'END:VCALENDAR'].join('\r\n');
+  return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//World Cup 2026//EN',
+    'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:FIFA World Cup 2026',
+    `X-APPLE-CALENDAR-COLOR:${color}`, 'X-WR-TIMEZONE:UTC',
+    ...events, 'END:VCALENDAR'].join('\r\n');
 }
 
-function downloadICS(matches, filename) {
-  const blob = new Blob([generateICS(matches)], { type: 'text/calendar;charset=utf-8' });
+function generateCancelICS(matches) {
+  const stamp = fmtICS(new Date());
+  const events = matches.map(m => {
+    const start = new Date(m.utcDate);
+    const end   = new Date(start.getTime() + 2 * 60 * 60 * 1000);
+    const home  = m.homeTeam?.name || 'TBD';
+    const away  = m.awayTeam?.name || 'TBD';
+    return ['BEGIN:VEVENT', `UID:wc2026-${m.id}@worldcup2026`,
+      `DTSTAMP:${stamp}`, `DTSTART:${fmtICS(start)}`, `DTEND:${fmtICS(end)}`,
+      `SUMMARY:${home} vs ${away}`, 'STATUS:CANCELLED', 'SEQUENCE:1',
+      'END:VEVENT'].join('\r\n');
+  });
+  return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//World Cup 2026//EN',
+    'CALSCALE:GREGORIAN', 'METHOD:CANCEL',
+    ...events, 'END:VCALENDAR'].join('\r\n');
+}
+
+function downloadICS(matches, filename, opts = {}) {
+  const blob = new Blob([generateICS(matches, opts)], { type: 'text/calendar;charset=utf-8' });
   const url  = URL.createObjectURL(blob);
   const a    = Object.assign(document.createElement('a'), { href: url, download: filename });
   document.body.appendChild(a); a.click();
   document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function downloadCancelICS(matches, filename) {
+  const blob = new Blob([generateCancelICS(matches)], { type: 'text/calendar;charset=utf-8' });
+  const url  = URL.createObjectURL(blob);
+  const a    = Object.assign(document.createElement('a'), { href: url, download: filename });
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+// ── Calendar modal ────────────────────────────────────────────────────────────
+function openCalModal(matches, filename) {
+  _calModalMatches  = matches;
+  _calModalFilename = filename;
+
+  const overlay = document.getElementById('cal-modal');
+
+  // Render emoji grid
+  const emojiGrid = document.getElementById('cal-emoji-grid');
+  emojiGrid.innerHTML = CAL_EMOJIS.map(e =>
+    `<button class="cal-emoji-btn${calPrefs.emoji === e ? ' selected' : ''}" data-emoji="${e}">${e}</button>`
+  ).join('');
+  emojiGrid.querySelectorAll('.cal-emoji-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      calPrefs.emoji = btn.dataset.emoji;
+      emojiGrid.querySelectorAll('.cal-emoji-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    });
+  });
+
+  // Render color grid
+  const colorGrid = document.getElementById('cal-color-grid');
+  colorGrid.innerHTML = CAL_COLORS.map(c =>
+    `<button class="cal-color-btn${calPrefs.color === c.hex ? ' selected' : ''}" data-color="${c.hex}" aria-label="${c.label}" style="background:${c.hex}"></button>`
+  ).join('');
+  colorGrid.querySelectorAll('.cal-color-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      calPrefs.color = btn.dataset.color;
+      colorGrid.querySelectorAll('.cal-color-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    });
+  });
+
+  // Scores toggle
+  const toggle = document.getElementById('cal-scores-toggle');
+  toggle.checked = calPrefs.includeScores;
+  toggle.addEventListener('change', () => { calPrefs.includeScores = toggle.checked; });
+
+  // Download
+  document.getElementById('cal-download-btn').onclick = () => {
+    localStorage.setItem('cal_prefs', JSON.stringify(calPrefs));
+    downloadICS(_calModalMatches, _calModalFilename, calPrefs);
+    closeCalModal();
+  };
+
+  // Delete
+  document.getElementById('cal-delete-btn').onclick = () => {
+    const deleteName = _calModalFilename.replace('.ics', '-cancel.ics');
+    downloadCancelICS(_calModalMatches, deleteName);
+    closeCalModal();
+  };
+
+  // Close handlers
+  document.getElementById('cal-modal-close').onclick = closeCalModal;
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeCalModal(); }, { once: true });
+
+  overlay.classList.remove('hidden');
+}
+
+function closeCalModal() {
+  document.getElementById('cal-modal').classList.add('hidden');
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -501,11 +608,13 @@ function getMatchMinute(m) {
   const now = new Date();
   const diffMs = now - start;
   const diffMins = Math.floor(diffMs / 60000);
-  
+
   if (diffMins < 0) return '0';
   if (diffMins <= 45) return String(diffMins);
-  if (diffMins <= 60) return '45+';
-  const secondHalfMin = diffMins - 15;
+  // Covers first-half stoppage time + halftime break (~20 min combined)
+  if (diffMins <= 65) return '45+';
+  // Second half: offset 65 = 45 min first half + ~20 min break
+  const secondHalfMin = 45 + (diffMins - 65);
   if (secondHalfMin <= 90) return String(secondHalfMin);
   return '90+';
 }
@@ -662,7 +771,7 @@ function renderFavTeamDashboard(container) {
     if (isLive) {
       if (nextMatch.status === 'HALFTIME') liveLabelText = '🔴 LIVE - HT';
       else if (nextMatch.status === 'PAUSED') liveLabelText = '🔴 LIVE - PAUSED';
-      else liveLabelText = `🔴 LIVE - ${getMatchMinute(nextMatch)}'`;
+      else liveLabelText = `🔴 LIVE`;
     }
     const statusLabel = isLive ? liveLabelText : `${dateStr} · ${timeStr}`;
     
@@ -714,7 +823,7 @@ function renderFavTeamDashboard(container) {
   });
 
   document.getElementById('fav-btn-download-cal').addEventListener('click', () => {
-    downloadICS(teamMatches, `${currentTeam.name.toLowerCase().replace(/\s/g, '-')}-calendar.ics`);
+    openCalModal(teamMatches, `${currentTeam.name.toLowerCase().replace(/\s/g, '-')}-calendar.ics`);
   });
 }
 
