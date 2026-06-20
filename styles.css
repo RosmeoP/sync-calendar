@@ -244,7 +244,7 @@ header {
 }
 
 .hero-card .team-tla {
-  color: rgba(28, 28, 30, 0.6) !important;
+  color: rgba(28, 28, 30, 0.55) !important;
 }
 
 .hero-card .score-main {
@@ -260,7 +260,7 @@ header {
 }
 
 .hero-card .venue-small {
-  color: rgba(28, 28, 30, 0.6) !important;
+  color: rgba(28, 28, 30, 0.55) !important;
 }
 
 .hero-card .badge-stage {
@@ -387,7 +387,7 @@ header {
   color: var(--t1);
   line-height: 1;
 }
-.score-main.hero-score { font-size: 3.6rem; letter-spacing: 8px; }
+.score-main.hero-score { font-size: 3.4rem; letter-spacing: 6px; }
 
 .score-vs {
   font-family: var(--f-score);
