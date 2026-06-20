@@ -5,7 +5,7 @@ let activeGroupIdx = 0;
 let favoriteTeamId = null;
 
 // ── Calendar prefs ────────────────────────────────────────────────────────────
-const CAL_EMOJIS = ['🏆','⚽','🌍','🎯','🔥','📅','🥅','🌐'];
+const CAL_EMOJIS = ['🏆','⚽','🌍','🎯','🔥','📅','🥅','🌐','none'];
 const CAL_COLORS = [
   { hex: '#007AFF', label: 'Blue'   },
   { hex: '#30D158', label: 'Green'  },
@@ -481,12 +481,13 @@ function generateICS(matches, opts = {}) {
     const home  = m.homeTeam?.name || 'TBD';
     const away  = m.awayTeam?.name || 'TBD';
     let desc    = fmtStage(m.stage, m.group);
-    let summary = `${emoji} ${home} vs ${away}`;
+    const prefix = emoji && emoji !== 'none' ? `${emoji} ` : '';
+    let summary = `${prefix}${home} vs ${away}`;
     if (m.status === 'FINISHED') {
       const h = m.score?.fullTime?.home ?? '–';
       const a = m.score?.fullTime?.away ?? '–';
       desc += `\\nResult: ${home} ${h} – ${a} ${away}`;
-      if (includeScores) summary = `${emoji} ${home} ${h}–${a} ${away}`;
+      if (includeScores) summary = `${prefix}${home} ${h}–${a} ${away}`;
     }
     return ['BEGIN:VEVENT', `UID:wc2026-${m.id}@worldcup2026`,
       `DTSTAMP:${stamp}`, `DTSTART:${fmtICS(start)}`, `DTEND:${fmtICS(end)}`,
@@ -542,7 +543,9 @@ function openCalModal(matches, filename) {
   // Render emoji grid
   const emojiGrid = document.getElementById('cal-emoji-grid');
   emojiGrid.innerHTML = CAL_EMOJIS.map(e =>
-    `<button class="cal-emoji-btn${calPrefs.emoji === e ? ' selected' : ''}" data-emoji="${e}">${e}</button>`
+    e === 'none'
+      ? `<button class="cal-emoji-btn cal-emoji-none${calPrefs.emoji === 'none' ? ' selected' : ''}" data-emoji="none">—</button>`
+      : `<button class="cal-emoji-btn${calPrefs.emoji === e ? ' selected' : ''}" data-emoji="${e}">${e}</button>`
   ).join('');
   emojiGrid.querySelectorAll('.cal-emoji-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -577,11 +580,12 @@ function openCalModal(matches, filename) {
     closeCalModal();
   };
 
-  // Delete
-  document.getElementById('cal-delete-btn').onclick = () => {
-    const deleteName = _calModalFilename.replace('.ics', '-cancel.ics');
-    downloadCancelICS(_calModalMatches, deleteName);
-    closeCalModal();
+  // Delete instructions toggle
+  const deleteToggle = document.getElementById('cal-delete-toggle');
+  const deleteInstructions = document.getElementById('cal-delete-instructions');
+  deleteInstructions.classList.add('hidden');
+  deleteToggle.onclick = () => {
+    deleteInstructions.classList.toggle('hidden');
   };
 
   // Close handlers

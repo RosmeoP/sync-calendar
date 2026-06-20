@@ -203,7 +203,14 @@
       <!-- Buttons -->
       <div class="cal-modal-actions">
         <button id="cal-download-btn" class="cal-btn-download">⬇ Download .ics</button>
-        <button id="cal-delete-btn" class="cal-btn-delete">🗑 Delete events from Calendar</button>
+        <button id="cal-delete-toggle" class="cal-btn-delete">🗑 How to delete from phone</button>
+        <div id="cal-delete-instructions" class="cal-delete-instructions hidden">
+          <div class="cal-delete-step"><span class="cal-delete-num">1</span>Open the <strong>Calendar</strong> app on your iPhone</div>
+          <div class="cal-delete-step"><span class="cal-delete-num">2</span>Tap <strong>Calendars</strong> at the bottom</div>
+          <div class="cal-delete-step"><span class="cal-delete-num">3</span>Find <strong>FIFA World Cup 2026</strong> and tap the ⓘ next to it</div>
+          <div class="cal-delete-step"><span class="cal-delete-num">4</span>Scroll down and tap <strong>Delete Calendar</strong></div>
+          <div class="cal-delete-note">This removes all World Cup events at once from your device.</div>
+        </div>
       </div>
     </div>
   </div>

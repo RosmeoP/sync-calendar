@@ -1643,4 +1643,56 @@ footer {
 .cal-btn-delete:hover  { background: rgba(255, 59, 48, 0.22); }
 .cal-btn-delete:active { transform: scale(0.98); }
 
+/* Delete instructions panel */
+.cal-delete-instructions {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: var(--r-md);
+  padding: 14px 14px 10px;
+}
+
+.cal-delete-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.83rem;
+  color: var(--t2);
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.cal-delete-step strong { color: var(--t1); }
+
+.cal-delete-num {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--t1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cal-delete-note {
+  font-size: 0.72rem;
+  color: var(--t3);
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+/* No-emoji button */
+.cal-emoji-none {
+  font-size: 0.85rem !important;
+  color: var(--t3);
+  letter-spacing: 0.02em;
+}
+
+.cal-emoji-none.selected {
+  color: var(--t1);
+}
 
