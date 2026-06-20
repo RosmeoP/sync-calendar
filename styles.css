@@ -91,6 +91,14 @@ header {
   border: 1px solid var(--edge-hi);
   border-radius: var(--r-md);
   box-shadow: var(--shine);
+  overflow: hidden;
+  padding: 3px;
+}
+
+.header-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .header-title {
@@ -139,7 +147,8 @@ header {
   color: var(--t3); font-size: 0.88rem;
 }
 
-.splash-logo { font-size: 3.2rem; opacity: 0.35; }
+.splash-logo { opacity: 0.7; }
+.splash-logo-img { width: 80px; height: 80px; object-fit: contain; }
 
 .spinner {
   width: 26px; height: 26px;
@@ -807,6 +816,40 @@ footer {
   border-top: 1px solid rgba(255,255,255,0.05);
   font-weight: 500; letter-spacing: 0.02em;
 }
+
+.footer-credit {
+  margin-top: 6px;
+  font-size: 0.65rem;
+  color: var(--t3);
+}
+
+.footer-credit strong { color: var(--t2); font-weight: 600; }
+
+.footer-credit a {
+  color: var(--t2);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.footer-credit a:hover { color: var(--t1); }
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-credit {
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: var(--t3);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: color 0.15s;
+  white-space: nowrap;
+}
+
+.header-credit:hover { color: var(--t1); }
 
 /* ── Utils ──────────────────────────────────────────────────────────────────── */
 .hidden { display: none !important; }
