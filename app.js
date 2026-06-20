@@ -533,7 +533,7 @@ function renderFavoriteTeamWidget() {
     const teams = getUniqueTeams();
     container.innerHTML = `
       <div class="fav-team-box">
-        <div class="fav-select-label">Choose your team</div>
+        <label for="fav-team-select" class="fav-select-label">Choose your team</label>
         <select id="fav-team-select" class="fav-select-dropdown">
           <option value="">-- Select Team --</option>
           ${teams.map(t => `<option value="${t.id}">${t.name}</option>`).join('')}
@@ -552,8 +552,129 @@ function renderFavoriteTeamWidget() {
     return;
   }
 
-  // Dashboard state (placeholder for now since Task 5 implements the full dashboard renderer)
-  container.innerHTML = `<div class="fav-team-box"><p style="font-size:0.7rem;color:var(--t2)">Loading dashboard...</p></div>`;
+  // Dashboard state
+  renderFavTeamDashboard(container);
+}
+
+function renderFavTeamDashboard(container) {
+  const teams = getUniqueTeams();
+  const currentTeam = teams.find(t => t.id === favoriteTeamId);
+  if (!currentTeam) {
+    favoriteTeamId = null;
+    localStorage.removeItem('fav_team_id');
+    renderFavoriteTeamWidget();
+    return;
+  }
+
+  // Fetch standing stats
+  const standing = getFavTeamStanding(favoriteTeamId);
+  const standingHTML = standing 
+    ? `<div class="fav-stats-grid">
+         <div class="fav-stat-card"><div class="fav-stat-lbl">Group</div><div class="fav-stat-val" style="font-size:0.8rem;font-weight:700">${standing.group.replace('GROUP_','')}</div></div>
+         <div class="fav-stat-card"><div class="fav-stat-lbl">Rank</div><div class="fav-stat-val">#${standing.position}</div></div>
+         <div class="fav-stat-card"><div class="fav-stat-lbl">Points</div><div class="fav-stat-val">${standing.points}</div></div>
+       </div>`
+    : `<p style="font-size:0.65rem;color:var(--t3);margin-bottom:10px">Standings currently unavailable</p>`;
+
+  // Fetch Matches
+  const teamMatches = allMatches.filter(m => m.homeTeam?.id === favoriteTeamId || m.awayTeam?.id === favoriteTeamId);
+  
+  // Previous match (most recently finished)
+  const prevMatch = teamMatches
+    .filter(m => normStatus(m.status) === 'finished')
+    .sort((a, b) => new Date(b.utcDate) - new Date(a.utcDate))[0];
+
+  let prevHTML = `<p style="font-size:0.65rem;color:var(--t3)">No previous match results</p>`;
+  if (prevMatch) {
+    const isHome = prevMatch.homeTeam.id === favoriteTeamId;
+    const oppName = isHome ? prevMatch.awayTeam.name : prevMatch.homeTeam.name;
+    const hScore = prevMatch.score?.fullTime?.home ?? 0;
+    const aScore = prevMatch.score?.fullTime?.away ?? 0;
+    const resultText = isHome 
+      ? `${hScore} - ${aScore} vs ${oppName}`
+      : `${aScore} - ${hScore} vs ${oppName}`;
+    prevHTML = `
+      <div class="fav-match-card">
+        <div class="fav-match-teams">
+          <span>vs ${oppName}</span>
+          <span class="fav-match-score">${hScore} - ${aScore}</span>
+        </div>
+        <div class="fav-match-meta">${isHome ? 'Home' : 'Away'} · FT</div>
+      </div>`;
+  }
+
+  // Next match (first upcoming or live)
+  const nextMatch = teamMatches
+    .filter(m => normStatus(m.status) !== 'finished')
+    .sort((a, b) => new Date(a.utcDate) - new Date(b.utcDate))[0];
+
+  let nextHTML = `<p style="font-size:0.65rem;color:var(--t3)">No upcoming matches scheduled</p>`;
+  if (nextMatch) {
+    const isHome = nextMatch.homeTeam.id === favoriteTeamId;
+    const oppName = isHome ? nextMatch.awayTeam.name : nextMatch.homeTeam.name;
+    const dateStr = new Date(nextMatch.utcDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    const timeStr = new Date(nextMatch.utcDate).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+    const statusLabel = normStatus(nextMatch.status) === 'live' ? '🔴 LIVE' : `${dateStr} · ${timeStr}`;
+    nextHTML = `
+      <div class="fav-match-card">
+        <div class="fav-match-teams">
+          <span>vs ${oppName}</span>
+        </div>
+        <div class="fav-match-meta">${statusLabel} ${nextMatch.venue ? `· ${nextMatch.venue}` : ''}</div>
+      </div>`;
+  }
+
+  // Render complete Dashboard
+  container.innerHTML = `
+    <div class="fav-team-box">
+      <div class="fav-team-header">
+        <div class="fav-team-title">
+          <span>⭐️ ${currentTeam.name}</span>
+        </div>
+        <button id="fav-btn-edit" class="fav-btn-change">Change</button>
+      </div>
+      
+      ${standingHTML}
+      
+      <div class="fav-section-title">Last Result</div>
+      ${prevHTML}
+      
+      <div class="fav-section-title">Next Match</div>
+      ${nextHTML}
+      
+      <button id="fav-btn-download-cal" class="fav-btn-sync">📅 Sync Team Calendar</button>
+    </div>
+  `;
+
+  // Listeners
+  document.getElementById('fav-btn-edit').addEventListener('click', () => {
+    favoriteTeamId = null;
+    localStorage.removeItem('fav_team_id');
+    renderFavoriteTeamWidget();
+  });
+
+  document.getElementById('fav-btn-download-cal').addEventListener('click', () => {
+    downloadICS(teamMatches, `${currentTeam.name.toLowerCase().replace(/\s/g, '-')}-calendar.ics`);
+  });
+}
+
+function getFavTeamStanding(teamId) {
+  if (!allStandings.length) return null;
+  const groups = allStandings.filter(s => s.type === 'TOTAL');
+  for (const g of groups) {
+    const row = (g.table || []).find(r => r.team?.id === teamId);
+    if (row) {
+      return {
+        group: g.group || '—',
+        position: row.position,
+        points: row.points,
+        won: row.won,
+        draw: row.draw,
+        lost: row.lost
+      };
+    }
+  }
+  return null;
 }
 
 function getUniqueTeams() {
