@@ -573,9 +573,29 @@ function openCalModal(matches, filename) {
   toggle.checked = calPrefs.includeScores;
   toggle.addEventListener('change', () => { calPrefs.includeScores = toggle.checked; });
 
-  // Download
+  const savePrefs = () => localStorage.setItem('cal_prefs', JSON.stringify(calPrefs));
+
+  // Build webcal URL pointing to the Netlify function
+  const buildCalendarURL = (scheme = 'webcal') => {
+    const base = `${window.location.origin}/.netlify/functions/calendar`;
+    const params = new URLSearchParams({
+      emoji:  calPrefs.emoji,
+      color:  calPrefs.color,
+      scores: calPrefs.includeScores ? 'true' : 'false',
+    });
+    return `${scheme}://${base.replace(/^https?:\/\//, '')}?${params}`;
+  };
+
+  // Subscribe (webcal://) — creates a real separate calendar on the device
+  document.getElementById('cal-subscribe-btn').onclick = () => {
+    savePrefs();
+    window.location.href = buildCalendarURL('webcal');
+    closeCalModal();
+  };
+
+  // Download fallback (for desktop / Android)
   document.getElementById('cal-download-btn').onclick = () => {
-    localStorage.setItem('cal_prefs', JSON.stringify(calPrefs));
+    savePrefs();
     downloadICS(_calModalMatches, _calModalFilename, calPrefs);
     closeCalModal();
   };
