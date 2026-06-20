@@ -1169,8 +1169,19 @@ footer {
 
 /* Mobile layout tweaks */
 @media (max-width: 1079px) {
-  #schedule, .info-card { padding-left: 0; padding-right: 0; }
+  #schedule { padding-left: 0; padding-right: 0; }
+  .info-card { padding-left: 0; padding-right: 0; }
   .hero-wrap { padding: 0 18px 8px; }
+  /* Narrow cards so they don't span edge-to-edge */
+  #schedule .match-card {
+    margin-left: 16px;
+    margin-right: 16px;
+    border-radius: var(--r-lg);
+  }
+  #schedule .date-label {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
 }
 
 /* Medium screens — show only right panel */

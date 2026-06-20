@@ -66,7 +66,7 @@
       <!-- ── CENTER PANEL ────────────────────────────── -->
       <div class="panel-center">
 
-        <!-- Mobile-only: stats strip + hero -->
+        <!-- Mobile-only: stats strip + hero + standings -->
         <div class="mobile-only">
           <div class="stats-strip" id="stats-strip-mobile">
             <div class="stat-chip live-chip"><span class="pulse-dot"></span><span id="stat-live">0</span> Live</div>
@@ -75,6 +75,13 @@
             <div class="stat-chip"><span class="chip-icon">✓</span><span id="stat-finished">0</span> Done</div>
           </div>
           <div id="hero-section" class="hero-wrap"></div>
+          <section id="standings-section-mobile" class="hidden">
+            <div class="section-hdr" style="padding:0 18px;margin-bottom:12px;">
+              <h2 class="section-title">Group Standings</h2>
+              <select id="group-select-mobile" class="group-select"></select>
+            </div>
+            <div style="padding:0 18px"><div id="standings-table-mobile" class="standings-card"></div></div>
+          </section>
         </div>
 
         <!-- Desktop: featured live/next match in center -->
@@ -112,16 +119,8 @@
         <!-- Schedule -->
         <main id="schedule"></main>
 
-        <!-- Mobile-only: standings + instructions -->
+        <!-- Mobile-only: instructions -->
         <div class="mobile-only">
-          <section id="standings-section-mobile" class="hidden">
-            <div class="section-hdr" style="padding:0 18px;margin-bottom:12px;">
-              <h2 class="section-title">Group Standings</h2>
-              <select id="group-select-mobile" class="group-select"></select>
-            </div>
-            <div style="padding:0 18px"><div id="standings-table-mobile" class="standings-card"></div></div>
-          </section>
-
           <div class="info-card">
             <div class="info-icon">📱</div>
             <div>
